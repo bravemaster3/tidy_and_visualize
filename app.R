@@ -1,15 +1,29 @@
-#inspiration from https://stackoverflow.com/questions/27080089/how-to-organize-large-shiny-apps
 library(shiny)
+library(shinythemes)
+
+#Sourcing module files
+source("upload_modules.R")
+
 ui <- shinyUI(navbarPage(
   "Tidy & Visualize",
-  tabPanel("File upload"),
-  tabPanel("Tidy it!"),
-  tabPanel("Visualize it!")
-  
+    tabPanel("File upload",
+             csvFileInput("datafile", "User data (.csv format)")
+              ),
+    tabPanel("Tidy it!",
+             dataTableOutput("table2")),
+    tabPanel("Visualize it!"),
+  theme = shinytheme("darkly")
 ))
 
 
 server <- function(input, output, session) {
+  
+  imported_table <- callModule(csvFile, "datafile",
+                         stringsAsFactors = FALSE)
+  
+  output$table <- renderDataTable({
+    imported_table()
+  })
 
 }
 
