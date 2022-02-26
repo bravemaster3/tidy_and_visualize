@@ -1,5 +1,6 @@
 #https://stackoverflow.com/questions/27080089/how-to-organize-large-shiny-apps
 
+#UI part of the CSV file reading module
 csvFileInput <- function(id, label = "CSV file") {
   # Create a namespace function using the provided id
   ns <- NS(id)
@@ -28,7 +29,7 @@ csvFileInput <- function(id, label = "CSV file") {
   )
 }
 
-# Module server function
+# Module server function of the CSV file reading module
 csvFile <- function(input, output, session, stringsAsFactors) {
   # The selected file, if any
   userFile <- reactive({
@@ -36,17 +37,6 @@ csvFile <- function(input, output, session, stringsAsFactors) {
     validate(need(input$file, message = FALSE))
     input$file
   })
-  
-  #Ensuring that the value given to the skip input is numeric, otherwise set it to 0
-  # skip_value <- reactive({
-  #   try(skip_valid <- as.numeric(input$skip))
-  #   ifelse(is.na(skip_valid),0,as.numeric(input$skip))
-  #   })
-  
-  #scan header row to be used as column names
-  # observe(input$scan,{
-  #  
-  # })
 
   header <- reactive({
     read.table(
@@ -58,8 +48,6 @@ csvFile <- function(input, output, session, stringsAsFactors) {
       sep=input$sep
     )
   })
-
-
   
   # The user's data, parsed into a data frame
   dataframe <- reactive({
@@ -78,7 +66,6 @@ csvFile <- function(input, output, session, stringsAsFactors) {
   })
   
 
-  
   # We can run observers in here if we want to
   observe({
     msg <- sprintf("File %s was uploaded", userFile()$name)
