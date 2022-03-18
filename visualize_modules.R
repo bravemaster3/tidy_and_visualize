@@ -7,13 +7,32 @@ visualizeInput <- function(id) {
   fluidPage(
     sidebarPanel(#the sidebarpanel will contain all controls of the graph, i.e. dataframe, x, y, graph type...
       uiOutput(ns("df_select")),
-      uiOutput(ns("x_select")),
-      uiOutput(ns("y_select"))
-    ),
+      selectInput(ns("graph_type"),
+                  label="Select the type of plot",
+                  choices=c("point"="geom_point(aes_string(x=x,y=y))",
+                            "line"="geom_line(aes_string(x=x,y=y))",
+                            "boxplot"="geom_boxplot(aes_string(x=x,y=y))",
+                            "beanplot"="geom_violin(aes_string(x=x,y=y))",
+                            "bar"="geom_bar(aes_string(x=x))")
+                  ),
+      fluidRow(
+        column(6,uiOutput(ns("x_select"))),
+        column(6,uiOutput(ns("y_select")))
+      ),
+      selectInput(ns("theme_type"),
+                  label="Select theme",
+                  choices=c("bw"="theme_bw()",
+                            "classic"="theme_classic()",
+                            "economist"="theme_economist()",
+                            "dark"="theme_dark()")
+                  ),
+      actionButton(ns("plotBtn"), "Plot it")
+      ),
     uiOutput(ns("mainpanelOutput")) #This one will be rendered dynamically in the server part of the module
   )
   
 }
+
 
 
 #Server part of the visualization module
@@ -44,18 +63,23 @@ visualize <- function(input, output, session) {
                 choices = colnames(selected_df()))
   })
   
-  output$mainpanelOutput <- renderUI({ #this will render the mainpanel dynamically, with the plot as well
-    req(input$x_select, input$y_select) #ensures that these variables are available before running the rest of the block
-    x <- input$x_select
-    y <- input$y_select
-    
-    mainPanel(
-      renderPlot({
-        ggplot(selected_df(), aes_string(x=x,y=y))+
-          geom_point()
-      },height = 400,width = 600)
-    )
-
+  observeEvent(input$plotBtn,{
+    output$mainpanelOutput <- renderUI({ #this will render the mainpanel dynamically, with the plot as well
+      req(input$x_select, input$y_select) #ensures that these variables are available before running the rest of the block
+      x <- input$x_select
+      y <- input$y_select
+      
+      mainPanel(
+        renderPlotly({
+          p <- ggplot(selected_df()) +
+            eval(parse(text = input$graph_type))+
+            eval(parse(text = input$theme_type))
+          ggplotly(p)
+        })
+      )
+      
+    })
   })
-
+  
+  
 }

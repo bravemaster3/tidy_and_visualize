@@ -1,6 +1,8 @@
 library(shiny)
 library(shinythemes)
 library(ggplot2)
+library(ggthemes)
+library(plotly)
 
 #Sourcing module files
 #Source here any additional modules created for the tidy.R tab. As long as the app is loaded as a project, relative paths work as below.

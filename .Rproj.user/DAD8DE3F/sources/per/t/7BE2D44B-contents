@@ -24,13 +24,14 @@ csvFileInput <- function(id, label = "CSV file") {
                      value=0)
     ),
     column(8,
-           dataTableOutput("table")
+           dataTableOutput(ns("table"))
     )
   )
 }
 
 # Module server function of the CSV file reading module
 csvFile <- function(input, output, session, stringsAsFactors) {
+  ns <- session$ns
   # The selected file, if any
   userFile <- reactive({
     # If no file is selected, don't do anything
@@ -50,7 +51,7 @@ csvFile <- function(input, output, session, stringsAsFactors) {
   })
   
   # The user's data, parsed into a data frame
-  dataframe <- reactive({
+  all_dfs$raw <<- reactive({ #very important the "<<", because that is how you update an existing global variable. after tidying, you can create a new reactive, adding e.g. $tidy1 to the list
     table1 <- read.table(
       userFile()$datapath,
       header = input$heading,
@@ -61,6 +62,7 @@ csvFile <- function(input, output, session, stringsAsFactors) {
     )
     
     colnames(table1) <- unlist(header())
+    colnames(table1) <- make.names(names(table1))
     table1
     
   })
@@ -72,6 +74,12 @@ csvFile <- function(input, output, session, stringsAsFactors) {
     cat(msg, "\n")
   })
   
-  # Return the reactive that yields the data frame
-  return(dataframe)
+  
+  # all_dfs$raw <<- reactive( #very important the "<<", because that is how you update an existing global variable. after tidying, you can create a new reactive, adding e.g. $tidy1 to the list
+  #   dataframe()
+  # )
+  
+  output$table <- renderDataTable({#this will display the table "table". note that "table" is the ID of the table on the upload tab. See UI part of the module in upload_modules
+    all_dfs$raw()
+  })
 }
