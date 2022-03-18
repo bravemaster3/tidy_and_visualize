@@ -6,6 +6,8 @@ function(input, output, session) {
   callModule(csvFile, "datafile",
                                stringsAsFactors = FALSE)
   
+  callModule(tidy, "tidyoptions")
+  
   callModule(visualize, "plotcontrols") #this is simply calling the server part of the visualize_module.R
   
 }
