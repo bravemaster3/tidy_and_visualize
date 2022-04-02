@@ -14,6 +14,10 @@ tidyInput <- function(id) {
      wellPanel(
        checkboxInput(inputId = ns("CheckNaRm"), label = "Create complete observations?"),
        actionButton(inputId = ns("BtnNaRm"), label = "Remove NAs")
+    ), 
+    wellPanel(
+      h1("Subsetting Dataframe"),
+      p("In this case, we are adding a title for the dataframe") 
     )
     ),
     
