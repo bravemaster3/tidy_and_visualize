@@ -26,6 +26,7 @@ visualizeInput <- function(id) {
                             "economist"="theme_economist()",
                             "dark"="theme_dark()")
                   ),
+      uiOutput(ns("axis_titles")),
       actionButton(ns("plotBtn"), "Plot it")
       ),
     uiOutput(ns("mainpanelOutput")) #This one will be rendered dynamically in the server part of the module
@@ -41,8 +42,8 @@ visualize <- function(input, output, session) {
   
   output$df_select <- renderUI({#this will render a select input dynamically, based on the global list of dataframes all_dfs
     selectInput(inputId = ns('df_select'),
-                                 label = "Select a table",
-                                 choices = names(all_dfs))
+                label = "Select a table",
+                choices = names(all_dfs))
   })
   
   selected_df <- reactive({#in this reactive expression, we retrieve the dataframe from the selected name in the selectinput "df_select"
@@ -63,22 +64,35 @@ visualize <- function(input, output, session) {
                 choices = colnames(selected_df()))
   })
   
+  output$axis_titles <- renderUI(
+        tagList(textInput(inputId = ns("x_title"),
+                          label = "Change X axis title",
+                          value = input$x_select),
+                textInput(inputId = ns("y_title"),
+                          label = "Change Y axis title",
+                          value = input$y_select))
+  )
+  
   observeEvent(input$plotBtn,{
-    output$mainpanelOutput <- renderUI({ #this will render the mainpanel dynamically, with the plot as well
-      req(input$x_select, input$y_select) #ensures that these variables are available before running the rest of the block
-      x <- input$x_select
-      y <- input$y_select
-      
-      mainPanel(
-        renderPlotly({
-          p <- ggplot(selected_df()) +
-            eval(parse(text = input$graph_type))+
-            eval(parse(text = input$theme_type))
-          ggplotly(p)
-        })
-      )
-      
-    })
+    #isolate(
+      output$mainpanelOutput <- renderUI({ #this will render the mainpanel dynamically, with the plot as well
+        req(input$x_select, input$y_select) #ensures that these variables are available before running the rest of the block
+        x <- input$x_select
+        y <- input$y_select
+        
+        mainPanel(
+          renderPlotly({
+            p <- ggplot(selected_df()) +
+              eval(parse(text = input$graph_type))+
+              eval(parse(text = input$theme_type))+
+              xlab(input$x_title)+
+              ylab(input$y_title)
+            ggplotly(p)
+          })
+        )
+        
+      })
+    #)
   })
   
   
