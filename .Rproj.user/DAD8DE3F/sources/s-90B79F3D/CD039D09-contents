@@ -7,8 +7,8 @@ shinyUI(navbarPage(
            csvFileInput("datafile", "User data (.csv format)")#this is a call to the UI part of the upload_modules.R code
 
   ),
-  tabPanel("Tidy it!",
-           tidyInput("tidyoptions")
+  tabPanel("Tidy it!"#,
+           #dataTableOutput("table2")
   ),
   tabPanel("Visualize it!",
            visualizeInput("plotcontrols") #this is a call to the UI part from the visualize_modules.R code
