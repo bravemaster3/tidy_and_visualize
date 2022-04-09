@@ -15,9 +15,14 @@ tidyInput <- function(id) {
        checkboxInput(inputId = ns("CheckNaRm"), label = "Create complete observations?"),
        actionButton(inputId = ns("BtnNaRm"), label = "Remove NAs")
     ), 
+    # wellPanel(
+    #   h1("Subsetting Dataframe"),
+    #   p("In this case, we are adding a title for the dataframe") 
+    # )
     wellPanel(
-      h1("Subsetting Dataframe"),
-      p("In this case, we are adding a title for the dataframe") 
+      uiOutput(ns("df_select")),
+     uiOutput(ns("slct_cols_Out")),
+     actionButton(ns("Btn_ColSubset"), label = "Create subset")
     )
     ),
     
@@ -70,6 +75,38 @@ tidy <- function(input, output, session) {
       all_dfs$raw_NaRm()
     })
   })
+  
+  output$df_select <- renderUI({#this will render a select input dynamically, based on the global list of dataframes all_dfs
+    selectInput(inputId = ns('df_select'),
+                label = "Select a table",
+                choices = names(all_dfs))
+  })
+  
+  selected_df <- reactive({
+    req(input$df_select)
+    selected_df_name <- input$df_select
+    all_dfs[[selected_df_name]]() 
+  })
+  
+  output$slct_cols_out <- renderUI(
+    selectInput(inputId = "slct_cols",
+                label = "select columns",
+                multiple = T,
+                choices = colnames(selected_df())
+                )
+    )
+  
+  observeEvent(input$Btn_ColSubset, {
+    # slcted_cols <- input$slct_cols
+    all_dfs$subset_df_cols <<- reactive({
+      selected_df()[,input$slct_cols]
+    })
+    
+    output$table2 <- renderDataTable({
+      all_dfs$subset_df_cols()
+    })
+  }
+  )
 
 }
 
