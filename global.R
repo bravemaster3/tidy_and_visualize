@@ -12,4 +12,5 @@ source("tidy_modules.R")
 
 #creating a global list of dataframes, availabe in the entire application, and updatable when a new dataframe is created either by uploading or after tidying...
 #See example in the server.R after loading raw data
-all_dfs <- list(raw=data.frame())
+# all_dfs <<- list(raw=data.frame())
+all_dfs <- reactiveValues(raw=data.frame())

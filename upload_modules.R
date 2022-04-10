@@ -51,7 +51,22 @@ csvFile <- function(input, output, session, stringsAsFactors) {
   })
   
   # The user's data, parsed into a data frame
-  all_dfs$raw <<- reactive({ #very important the "<<", because that is how you update an existing global variable. after tidying, you can create a new reactive, adding e.g. $tidy1 to the list
+  # all_dfs$raw <<- reactiveVal({ #very important the "<<", because that is how you update an existing global variable. after tidying, you can create a new reactive, adding e.g. $tidy1 to the list
+  #   table1 <- read.table(
+  #     userFile()$datapath,
+  #     header = input$heading,
+  #     quote = input$quote,
+  #     stringsAsFactors = stringsAsFactors,
+  #     sep=input$sep,
+  #     skip = as.numeric(input$skip)#skip_value()#skip_checked
+  #     
+  #   )
+  #   
+  #   colnames(table1) <- unlist(header())
+  #   colnames(table1) <- make.names(names(table1))
+  #   table1
+  # })
+  observe({
     table1 <- read.table(
       userFile()$datapath,
       header = input$heading,
@@ -59,13 +74,14 @@ csvFile <- function(input, output, session, stringsAsFactors) {
       stringsAsFactors = stringsAsFactors,
       sep=input$sep,
       skip = as.numeric(input$skip)#skip_value()#skip_checked
+      
     )
     
     colnames(table1) <- unlist(header())
     colnames(table1) <- make.names(names(table1))
-    table1
-    
+    all_dfs$raw = table1
   })
+ 
   
 
   # We can run observers in here if we want to
@@ -80,6 +96,6 @@ csvFile <- function(input, output, session, stringsAsFactors) {
   # )
   
   output$table <- renderDataTable({#this will display the table "table". note that "table" is the ID of the table on the upload tab. See UI part of the module in upload_modules
-    all_dfs$raw()
+    all_dfs$raw
   })
 }
