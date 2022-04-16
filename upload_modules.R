@@ -77,8 +77,7 @@ csvFile <- function(input, output, session, stringsAsFactors) {
       
     )
     
-    colnames(table1) <- unlist(header())
-    colnames(table1) <- make.names(names(table1))
+    colnames(table1) <- make.names(header())
     all_dfs$raw = table1
   })
  

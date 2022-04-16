@@ -83,8 +83,7 @@ tidy <- function(input, output, session) {
 
   selected_df <- reactive({
     req(input$df_select)
-    selected_df_name <- input$df_select
-    all_dfs[[selected_df_name]]
+    all_dfs[[input$df_select]]
   })
 
   output$slct_cols_out <- renderUI(
