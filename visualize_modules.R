@@ -41,7 +41,7 @@ visualize <- function(input, output, session) {
   ns <- session$ns #Not sure how important it is, but this is to ensure that we are in the same namespace as in the UI part I guess
   
   output$df_select <- renderUI({#this will render a select input dynamically, based on the global list of dataframes all_dfs
-    selectInput(inputId = ns('df_select'),
+    selectInput(inputId = ns("df_select"),
                 label = "Select a table",
                 choices = names(all_dfs))
   })
@@ -49,7 +49,7 @@ visualize <- function(input, output, session) {
   selected_df <- reactive({#in this reactive expression, we retrieve the dataframe from the selected name in the selectinput "df_select"
     req(input$df_select)#ensures that a selection has been made before running the rest of the block
     selected_df_name <- input$df_select
-    all_dfs[[selected_df_name]]() #important here to use double square brakets because all_dfs is a list of dataframes
+    all_dfs[[selected_df_name]] #important here to use double square brakets because all_dfs is a list of dataframes
   })
    # 
   output$x_select <- renderUI({#this will render a select input dynamically based on the selected dataframe in the first selectinput ("df_select) for selecting X variable to plot
