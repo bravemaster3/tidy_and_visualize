@@ -26,7 +26,7 @@ tidyInput <- function(id) {
     wellPanel(
       uiOutput(ns("df_Rselect")),
       uiOutput(ns("Slider")),
-      actionButton(ns("Btn_FIlterrow"), label = "Filter Selected Rows")
+      actionButton(ns("Btn_Filterrow"), label = "Filter Selected Rows")
     )
     ),
     
@@ -117,8 +117,8 @@ tidy <- function(input, output, session) {
   })
   
   selected_Rdf <- reactive({
-    req(input$df_Rselect)
-    all_dfs[[input$df_Rselect]]
+    req(input$df_Rslct)
+    all_dfs[[input$df_Rslct]]
   })
   
   output$Slider <- renderUI({
@@ -126,11 +126,11 @@ tidy <- function(input, output, session) {
   })
 
   observeEvent(input$Btn_Filterrow, {
-    all_dfs$filtered_rows = selected_Rdf()[df_Rselect[input$FilerRow[1]:input$FilterRow[2]],]})
-      
+    all_dfs$filtered_rows = selected_Rdf()[input$FilterRow[1]:input$FilterRow[2],]
     output$table2 <- renderDataTable({
-    all_dfs$filtered_rows}
-  )
+      all_dfs$filtered_rows
+    })
+  })
   
 }
 
