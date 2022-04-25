@@ -6,27 +6,51 @@ visualizeInput <- function(id) {
   
   fluidPage(
     sidebarPanel(#the sidebarpanel will contain all controls of the graph, i.e. dataframe, x, y, graph type...
-      uiOutput(ns("df_select")),
-      selectInput(ns("graph_type"),
-                  label="Select the type of plot",
-                  choices=c("point"="geom_point(aes_string(x=x,y=y))",
-                            "line"="geom_line(aes_string(x=x,y=y))",
-                            "boxplot"="geom_boxplot(aes_string(x=x,y=y))",
-                            "beanplot"="geom_violin(aes_string(x=x,y=y))",
-                            "bar"="geom_bar(aes_string(x=x))")
-                  ),
-      fluidRow(
-        column(6,uiOutput(ns("x_select"))),
-        column(6,uiOutput(ns("y_select")))
+      wellPanel(
+        h3("Main geometry"),
+        uiOutput(ns("df_select")),
+        selectInput(ns("graph_type"),
+                    label="Select the type of plot",
+                    choices=c("point"="geom_point(aes_string(x=x,y=y))",
+                              "line"="geom_line(aes_string(x=x,y=y))",
+                              "boxplot"="geom_boxplot(aes_string(x=x,y=y))",
+                              "beanplot"="geom_violin(aes_string(x=x,y=y))",
+                              "bar"="geom_bar(aes_string(x=x))")
+        ),
+        fluidRow(
+          column(6,uiOutput(ns("x_select"))),
+          column(6,uiOutput(ns("y_select")))
+        )
       ),
-      selectInput(ns("theme_type"),
-                  label="Select theme",
-                  choices=c("bw"="theme_bw()",
-                            "classic"="theme_classic()",
-                            "economist"="theme_economist()",
-                            "dark"="theme_dark()")
-                  ),
-      uiOutput(ns("axis_titles")),
+      
+      wellPanel(
+        h3("Additional geometries"),
+        uiOutput(ns("df_select2")),
+        selectInput(ns("graph_type2"),
+                    label="Select the type of plot",
+                    choices=c("point"="geom_point(aes_string(x=x,y=y))",
+                              "line"="geom_line(aes_string(x=x,y=y))",
+                              "boxplot"="geom_boxplot(aes_string(x=x,y=y))",
+                              "beanplot"="geom_violin(aes_string(x=x,y=y))",
+                              "bar"="geom_bar(aes_string(x=x))")
+        ),
+        fluidRow(
+          column(6,uiOutput(ns("x_select2"))), # Not sure yet if this should be an option.
+          column(6,uiOutput(ns("y_select2")))
+        )
+      ),
+      
+      wellPanel(
+        h3("Additional settings"),
+        selectInput(ns("theme_type"),
+                    label="Select theme",
+                    choices=c("bw"="theme_bw()",
+                              "classic"="theme_classic()",
+                              "economist"="theme_economist()",
+                              "dark"="theme_dark()")
+        ),
+        uiOutput(ns("axis_titles"))
+      ),
       actionButton(ns("plotBtn"), "Plot it")
       ),
     uiOutput(ns("mainpanelOutput")) #This one will be rendered dynamically in the server part of the module
