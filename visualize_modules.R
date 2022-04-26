@@ -17,7 +17,7 @@ visualizeInput <- function(id) {
                   ),
       fluidRow(
         column(6,uiOutput(ns("x_select"))),
-        column(6,uiOutput(ns("y_select")))
+        column(6,uiOutput(ns("y_select"))),
       ),
       selectInput(ns("theme_type"),
                   label="Select theme",
@@ -27,6 +27,7 @@ visualizeInput <- function(id) {
                             "dark"="theme_dark()")
                   ),
       uiOutput(ns("axis_titles")),
+      uiOutput(ns("heading_graph")),
       actionButton(ns("plotBtn"), "Plot it")
       ),
     uiOutput(ns("mainpanelOutput")) #This one will be rendered dynamically in the server part of the module
@@ -73,6 +74,8 @@ visualize <- function(input, output, session) {
                       value = input$y_select))
   )
   
+  output$heading_graph <- renderUI(
+    textInput(inputId = ns("main_title"), label = "Give your Graph a Title", placeholder = "Provide your graph a title"))
   
   observeEvent(input$plotBtn,{
     output$mainpanelOutput <- renderUI({ #this will render the mainpanel dynamically, with the plot as well
@@ -86,7 +89,7 @@ visualize <- function(input, output, session) {
             eval(parse(text = input$graph_type))+
             eval(parse(text = input$theme_type))+
             xlab(input$x_title)+
-            ylab(input$y_title)
+            ylab(input$y_title)+ ggtitle(input$main_title)
           
           ggplotly(p)
         })
