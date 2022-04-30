@@ -122,7 +122,8 @@ tidy <- function(input, output, session) {
   })
   
   output$Slider <- renderUI({
-    sliderInput(inputId = ns("FilterRow"), label = h3("Range of rows"), min = 1, max = 1000, value = c(4,10), dragRange = T)
+    sliderInput(inputId = ns("FilterRow"), label = h3("Range of rows"), min = 1, max = nrow(selected_Rdf()), step=1,
+                value = c(ceiling(nrow(selected_Rdf())/10), ceiling(nrow(selected_Rdf())/5)), dragRange = T)
   })
 
   observeEvent(input$Btn_Filterrow, {
