@@ -24,16 +24,18 @@ visualizeInput <- function(id) {
       ),
       
       wellPanel(
-        h3("Additional geometries"),
-        uiOutput(ns("df_select2")),
-        selectInput(ns("graph_type2"),
-                    label="Select the type of plot",
-                    choices=c("point"="geom_point(aes_string(x=x,y=y))",
-                              "line"="geom_line(aes_string(x=x,y=y))",
-                              "boxplot"="geom_boxplot(aes_string(x=x,y=y))",
-                              "beanplot"="geom_violin(aes_string(x=x,y=y))",
-                              "bar"="geom_bar(aes_string(x=x))")
-        ),
+        id=ns("wellpanAddGeom"),
+        checkboxInput(ns("checkAddGeom"),label=h3("Additional geometries")),
+        # uiOutput(ns("df_select2")),
+        uiOutput(ns("addGeomControls")),
+        # selectInput(ns("graph_type2"),
+        #             label="Select the type of plot",
+        #             choices=c("point"="geom_point(aes_string(x=x,y=y))",
+        #                       "line"="geom_line(aes_string(x=x,y=y))",
+        #                       "boxplot"="geom_boxplot(aes_string(x=x,y=y))",
+        #                       "beanplot"="geom_violin(aes_string(x=x,y=y))",
+        #                       "bar"="geom_bar(aes_string(x=x))")
+        # ),
         fluidRow(
           column(6,uiOutput(ns("x_select2"))), # Not sure yet if this should be an option.
           column(6,uiOutput(ns("y_select2")))
@@ -72,7 +74,7 @@ visualize <- function(input, output, session) {
                 label = "Select a table",
                 choices = names(all_dfs))
   })
-  
+
   selected_df <- reactive({#in this reactive expression, we retrieve the dataframe from the selected name in the selectinput "df_select"
     req(input$df_select)#ensures that a selection has been made before running the rest of the block
     selected_df_name <- input$df_select
@@ -90,6 +92,37 @@ visualize <- function(input, output, session) {
                 label = "Select Y column",
                 choices = colnames(selected_df()))
   })
+  
+  #Programming the server logic for additional geometry
+  observeEvent(input$checkAddGeom, {
+    if(input$checkAddGeom == TRUE){
+      output$addGeomControls <- renderUI({#this will render a select input dynamically, based on the global list of dataframes all_dfs
+        tagList(
+          selectInput(inputId = ns("df_select2"),
+                      label = "Select a table",
+                      choices = names(all_dfs)),
+          selectInput(ns("graph_type2"),
+                      label="Select the type of plot",
+                      choices=c("point"="geom_point(aes_string(x=x,y=y))",
+                                "line"="geom_line(aes_string(x=x,y=y))",
+                                "boxplot"="geom_boxplot(aes_string(x=x,y=y))",
+                                "beanplot"="geom_violin(aes_string(x=x,y=y))",
+                                "bar"="geom_bar(aes_string(x=x))")
+          )
+        )
+      })
+      
+    } 
+    # else{
+    #   print(paste0("#",{ns("df_select2")}))
+    #   removeUI(selector = "div:has(> #df_select2)",
+    #            immediate = TRUE
+    #            )
+    # }
+  })
+  
+  
+  #Programming the server logic for extra controls...
  
   output$axis_titles <- renderUI(
     tagList(textInput(inputId = ns("x_title"),
@@ -109,6 +142,14 @@ visualize <- function(input, output, session) {
       })
   })
   
+  
+  #let's get the input$graph_type2 reactively outside and add it only if the checkbutton is checked.
+  additional_geom <- reactive({
+    if(input$checkAddGeom==TRUE) input$graph_type2
+    else "NULL"
+  })
+  
+  #Let's finally do the plottings
   observeEvent(input$plotBtn,{
      req(input$x_select, input$y_select) #ensures that these variables are available before running the rest of the block
       x <- input$x_select
@@ -119,6 +160,7 @@ visualize <- function(input, output, session) {
       # mainPanel(
       p <- ggplot(selected_df()) +
         eval(parse(text = input$graph_type))+
+        eval(parse(text = additional_geom()))+
         eval(parse(text = input$theme_type))+
         xlab(input$x_title)+
         ylab(input$y_title)
