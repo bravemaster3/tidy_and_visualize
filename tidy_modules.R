@@ -51,7 +51,7 @@ tidy <- function(input, output, session) {
         tagList(
           selectInput(inputId = ns('slct_timecol'),
                       label = "Select datetime column",
-                      choices = colnames(all_dfs$raw())),
+                      choices = colnames(all_dfs$raw)),
           textInput(inputId = ns('time_format'),
                     label="Input the time format",
                     value="%Y-%m-%d %H:%M:%S",
@@ -66,9 +66,7 @@ tidy <- function(input, output, session) {
     
     raw_df <- all_dfs$raw
     raw_df[,input$slct_timecol] <- as.POSIXct(raw_df[,input$slct_timecol], format=input$time_format, tz="UTC")
-    all_dfs$raw_withTime <<- reactive( #Note that this is how you save a new dataframe to the list. here it is named raw2
-      raw_df
-    )
+    all_dfs$raw_withTime = raw_df
   })
   
   #Programming the logic for removing missing values and creating a new dataframe
