@@ -15,11 +15,18 @@ tidyInput <- function(id) {
      wellPanel(
        checkboxInput(inputId = ns("CheckNaRm"), label = "Create complete observations?"),
        actionButton(inputId = ns("BtnNaRm"), label = "Remove NAs")
-    ), 
+    ),
+    
     wellPanel(
       uiOutput(ns("df_select")),
       uiOutput(ns("slct_cols_out")),
       actionButton(ns("Btn_ColSubset"), label = "Create subset")
+    ),
+    
+    wellPanel(
+      uiOutput(ns("df_Rselect")),
+      uiOutput(ns("Slider")),
+      actionButton(ns("Btn_Filterrow"), label = "Filter Selected Rows")
     )
     ),
     
@@ -100,7 +107,30 @@ tidy <- function(input, output, session) {
     })
   }
   )
+  
+  output$df_Rselect <- renderUI({
+    selectInput(inputId = ns("df_Rslct"),
+                label = "Select table",
+                choices = names(all_dfs))
+  })
+  
+  selected_Rdf <- reactive({
+    req(input$df_Rslct)
+    all_dfs[[input$df_Rslct]]
+  })
+  
+  output$Slider <- renderUI({
+    sliderInput(inputId = ns("FilterRow"), label = h3("Range of rows"), min = 1, max = nrow(selected_Rdf()), step=1,
+                value = c(ceiling(nrow(selected_Rdf())/10), ceiling(nrow(selected_Rdf())/5)), dragRange = T)
+  })
 
+  observeEvent(input$Btn_Filterrow, {
+    all_dfs$filtered_rows = selected_Rdf()[input$FilterRow[1]:input$FilterRow[2],]
+    output$table2 <- renderDataTable({
+      all_dfs$filtered_rows
+    })
+  })
+  
 }
 
 

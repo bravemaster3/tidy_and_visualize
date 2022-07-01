@@ -13,6 +13,10 @@ shinyUI(navbarPage(
   tabPanel("Visualize it!",
            visualizeInput("plotcontrols") #this is a call to the UI part from the visualize_modules.R code
   ),
+  tabPanel("About the App",
+           aboutInput("aboutoptions")
+           ),
+  
   theme = shinytheme("united"), #this can be changed with any of the predefined themes available when using shinytheme
   position = c("fixed-top"),
   tags$style(type="text/css", "body {padding-top: 70px;}"),

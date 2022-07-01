@@ -10,6 +10,7 @@ library(plotly)
 source("upload_modules.R")
 source("visualize_modules.R")
 source("tidy_modules.R")
+source("about_app.R")
 
 #creating a global list of dataframes, availabe in the entire application, and updatable when a new dataframe is created either by uploading or after tidying...
 #See example in the server.R after loading raw data

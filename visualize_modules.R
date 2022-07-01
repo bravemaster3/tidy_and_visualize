@@ -133,6 +133,8 @@ visualize <- function(input, output, session) {
                       value = input$y_select))
   )
   
+  output$heading_graph <- renderUI(
+    textInput(inputId = ns("main_title"), label = "Give your Graph a Title", placeholder = "Provide your graph a title"))
   
   observe({
     output$mainpanelOutput <- renderUI({ #this will render the mainpanel dynamically, with the plot as well
