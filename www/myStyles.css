@@ -1,0 +1,67 @@
+.sidebarpanel{
+  position: fixed;
+  height: calc(100vh - 50px);
+  overflow-y: auto;
+  width: 25%;
+  float:left;
+  margin-left: -14px;
+  z-index: 3;
+  scrollbar-color: #115f9a #e0e0e0;
+  scrollbar-width: thin;
+}
+
+.mainpanel{
+  position: relative;
+  height: calc(100vh - 50px);
+  width: 75%;
+  overflow-y: auto;
+  float:right;
+}
+
+body {
+  background-color: #d7e1ee;
+}
+
+
+.well {
+  background-color: #d7e1ee;
+  border-color: black;
+}
+
+/*
+.navbar {
+  background-color: #115f9a;
+}
+*/
+
+
+
+.navbar-default .navbar-brand {
+  background:#115f9a;
+  color: white;
+}
+
+.navbar-default .navbar-brand:hover {
+  color: orange;
+}
+
+.navbar-default {
+  background:#115f9a;
+  color: white;
+}
+
+.navbar-default .navbar-nav > li > a 
+{color:white;}
+
+.navbar-default .navbar-nav > li > a:hover {
+  color: orange;
+  
+}
+
+* {
+ font-size: 100%;
+ font-family: Arial;
+}
+
+
+

@@ -3,22 +3,23 @@ library(shinythemes)
 
 shinyUI(navbarPage(
   "Tidy & Visualize",
+  header=tags$style(HTML("body {padding-top: 50px;}")),
   tabPanel("File upload",
-           csvFileInput("datafile", "User data (.csv format)")#this is a call to the UI part of the upload_modules.R code
+           csvFileUI("datafile", "User data (.csv format)")#this is a call to the UI part of the upload_modules.R code
 
   ),
   tabPanel("Tidy it!",
-           tidyInput("tidyoptions")
+           tidyUI("tidyoptions")
   ),
   tabPanel("Visualize it!",
-           visualizeInput("plotcontrols") #this is a call to the UI part from the visualize_modules.R code
+           visualizeUI("plotcontrols") #this is a call to the UI part from the visualize_modules.R code
   ),
   tabPanel("About the App",
-           aboutInput("aboutoptions")
+           aboutUI("aboutoptions")
            ),
   
-  theme = shinytheme("united"), #this can be changed with any of the predefined themes available when using shinytheme
+  theme = "myStyles.css",#shinytheme("united"), #this can be changed with any of the predefined themes available when using shinytheme
   position = c("fixed-top"),
-  tags$style(type="text/css", "body {padding-top: 70px;}"),
+  #tags$style(type="text/css", "body {padding-top: 70px;}"),
   collapsible = TRUE
 ))

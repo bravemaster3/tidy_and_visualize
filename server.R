@@ -5,11 +5,12 @@ function(input, output, session) {
   #   all_dfs <<- list(raw=data.frame())
   # )
   #This call to the upload csv module (csvFile) will return the raw dataframe imported
-  callModule(csvFile, "datafile",
-                               stringsAsFactors = FALSE)
+  # callModule(csvFile, "datafile",
+  #                              stringsAsFactors = FALSE)
+  csvFileServer(id="datafile", saf = FALSE)
   
-  callModule(tidy, "tidyoptions")
+  tidyServer(id="tidyoptions")
   
-  callModule(visualize, "plotcontrols") #this is simply calling the server part of the visualize_module.R
+  visualizeServer(id="plotcontrols") #this is simply calling the server part of the visualize_module.R
   
 }
